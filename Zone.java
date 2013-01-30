@@ -13,12 +13,14 @@ import java.util.Vector;
 public class Zone {
     Zone(int line, int position, int length, int numOfLines, int scrollTime)
     {
+        m_scrollTimer = System.currentTimeMillis();
+        m_displayTime = scrollTime;
         m_zoneLine = line;
         m_zonePosition = position;
         m_zoneLength = length;
         m_twoLines = false;
         m_infoItems = new Vector();
-        if(numOfLines > 0)
+        if(numOfLines > 1)
         {
             m_twoLines = true;
         }
@@ -67,10 +69,9 @@ public class Zone {
     
     String getLineOne()
     {
-        System.out.println("Line One");
         byte[] tmp = new byte[m_zoneLength];
         Arrays.fill(tmp, (byte)'-');
-	String tmpString = "";
+	String tmpString = new String(tmp);
 	if(!m_infoItems.isEmpty())
 	{
 		if(m_scrollPosition >= (int)m_infoItems.size())
@@ -84,7 +85,6 @@ public class Zone {
     
     String getLineTwo()
     {
-        System.out.println("Line Two");
         byte[] tmp = new byte[m_zoneLength];
         Arrays.fill(tmp, (byte)'-');        
         String tmpString = new String(tmp);
@@ -110,7 +110,11 @@ public class Zone {
     
     void update()
     {
-        
+        if(System.currentTimeMillis() > m_scrollTimer)
+        {
+            m_scrollTimer += m_displayTime;
+            advanceZoneDown();
+        }
     }
 		
 	
@@ -120,8 +124,9 @@ public class Zone {
     private boolean m_twoLines;
     private boolean m_rotate;
     private int m_scrollPosition;
+    private long m_scrollTimer;
     // lenght of time each information item is displayed
     private int m_displayTime;
     // container for information items
-    Vector m_infoItems;
+    private Vector m_infoItems;
 }

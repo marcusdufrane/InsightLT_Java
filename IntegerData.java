@@ -12,6 +12,7 @@ import com.sun.squawk.util.Arrays;
 public class IntegerData implements DisplayData {
     public IntegerData()
     {
+        m_updateString = true;
         m_integerData = 0;
         m_integerHeader = "";
     };

@@ -25,37 +25,33 @@ public class InsightLT implements Runnable {
     
     public InsightLT()
     {
-        thread = new Thread(this);
-        m_stopDisplayThread = false;
         module = DigitalModule.getInstance(1);
-        m_twiComm = module.getI2C(0x78);   
-        m_displayConnected = false;
-        m_zones = new Vector();
-        config(ONE_TWO_LINE_ZONE);
+        setupHelper();        
+        config(ONE_TWO_LINE_ZONE);        
     }
     
     public InsightLT(int option)
     {
-        thread = new Thread(this);
-        m_stopDisplayThread = false;
-        module = DigitalModule.getInstance(1);
-        m_twiComm = module.getI2C(0x78);
-        m_displayConnected = false;
-        m_zones = new Vector();
+        
+        module = DigitalModule.getInstance(1);  
+        setupHelper();      
         config(option);
     }
     
     public InsightLT(int option, char moduleNumber)
-    {
-        thread = new Thread(this);
-        m_stopDisplayThread = false;
+    {       
         module = DigitalModule.getInstance(moduleNumber);
-        m_twiComm = module.getI2C(0x78);
-        m_displayConnected = false;
-        m_zones = new Vector();
+        setupHelper();        
         config(option);
     }
     	
+    private void setupHelper()
+    {
+        m_stopDisplayThread = false;
+        m_twiComm = module.getI2C(0x78);
+        m_displayConnected = false;
+        m_zones = new Vector();
+    }
     public Zone getZone(int zoneNumber)
     {
         if(zoneNumber < 1 || zoneNumber > m_zones.size())
@@ -70,6 +66,8 @@ public class InsightLT implements Runnable {
     
     public void startDisplay()
     {
+        thread = new Thread(this);
+        m_stopDisplayThread = false;
         thread.start();
     }    
     
@@ -113,11 +111,8 @@ public class InsightLT implements Runnable {
         if(zoneNumber < 1 || zoneNumber > m_zones.size())
         {
             return false;
-        }
-        else
-        {
-            ((Zone)m_zones.elementAt(zoneNumber - 1)).registerData(dataItem);
-        }
+        }        
+        ((Zone)m_zones.elementAt(zoneNumber - 1)).registerData(dataItem);
         return true;
     }
     
@@ -163,7 +158,7 @@ public class InsightLT implements Runnable {
     
     public void run()	
     {      
-	while(true)
+	while(!m_stopDisplayThread)
 	{
             if(!getConnectionStatus())
             {
@@ -181,7 +176,7 @@ public class InsightLT implements Runnable {
             }	
             else
             {
-                while(true)
+                while(!m_stopDisplayThread)
                 {
                     if(m_twiComm.addressOnly())
                     {
@@ -191,10 +186,11 @@ public class InsightLT implements Runnable {
                     for(int x = 1; x < 5; x++)
                     {					
                         Zone tmpZone = getZone(x);
+                        
                         if(tmpZone != null)
                         {
                             tmpZone.update();
-                            writeMessage(tmpZone.getLineOne(), tmpZone.getLine(), tmpZone.getPosition());
+                            writeMessage(tmpZone.getLineOne(), tmpZone.getLine(), tmpZone.getPosition());                           
                             if(tmpZone.isTwoLines())
                             {
                                 writeMessage(tmpZone.getLineTwo(), tmpZone.getLine() + 1, tmpZone.getPosition());
@@ -205,6 +201,7 @@ public class InsightLT implements Runnable {
                 }                
             }
         }
+        setConnectionStatus(false);
     }
     
     private void initializeDisplay()
@@ -245,17 +242,17 @@ public class InsightLT implements Runnable {
 	switch(option)
 	{
 	case FOUR_ZONES:
-		m_zones.addElement(new Zone(LINE_1, 0, 10, 1, 1000));
-		m_zones.addElement(new Zone(LINE_1, 10, 10, 1, 1000));
-		m_zones.addElement(new Zone(LINE_2, 0, 10, 1, 1000));
-		m_zones.addElement(new Zone(LINE_2, 10, 10, 1, 1000));
+		m_zones.addElement(new Zone(LINE_1, 0, 10, 1, 1500));
+		m_zones.addElement(new Zone(LINE_1, 10, 10, 1, 1500));
+		m_zones.addElement(new Zone(LINE_2, 0, 10, 1, 1500));
+		m_zones.addElement(new Zone(LINE_2, 10, 10, 1, 1500));
 	case TWO_ONE_LINE_ZONES:
-		m_zones.addElement(new Zone(LINE_1, 0, 20, 1, 1000));
-		m_zones.addElement(new Zone(LINE_2, 0, 20, 1, 1000));
+		m_zones.addElement(new Zone(LINE_1, 0, 20, 1, 1500));
+		m_zones.addElement(new Zone(LINE_2, 0, 20, 1, 1500));
 		break;
 	case ONE_TWO_LINE_ZONE:
 	default:
-		m_zones.addElement(new Zone(LINE_1, 0, 20, 2, 1000));
+		m_zones.addElement(new Zone(LINE_1, 0, 20, 2, 1500));
 		break;
 	}
     }

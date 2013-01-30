@@ -48,13 +48,13 @@ public class DecimalData implements DisplayData{
         if(m_updateString)
 	{
             m_updateString = false;
-            String tmpString = formatFloat(m_floatData);            
+            String tmpString = formatDecimal(m_floatData);            
             
             if(m_floatHeader.length() + tmpString.length() > zoneLength)
             {                
                 if(tmpString.length() > zoneLength)
                 {
-                        tmpString = new String( tmpString.substring( 0, (tmpString.length() - (tmpString.length() - zoneLength) - 1)));
+                        tmpString = tmpString.substring( 0, (tmpString.length() - (tmpString.length() - zoneLength) - 1));
                 }
                 m_formattedString = m_floatHeader.substring(0, zoneLength - tmpString.length()) + tmpString;
             }
@@ -68,29 +68,24 @@ public class DecimalData implements DisplayData{
 	return m_formattedString;
     }
     
-    private String formatFloat(double convert)
+    private String formatDecimal(double convert)
     {
-        String tmpString = Double.toString(convert);
-        int counter = 0;
-        while(counter < tmpString.length())
+        int exp = 10;
+        for(int i = 1; i < m_precision; i++)
         {
-            if(tmpString.charAt(counter) == '.')
-            {
-                 if(tmpString.length() - counter >= 2)
-                 {
-                     tmpString = tmpString.substring(0, counter+2);
-                 }
-                 else if(tmpString.length() - counter == 1)
-                 {
-                     tmpString = tmpString.substring(0, counter + 1) + "0";
-                 }
-                 else
-                 {
-                     tmpString = tmpString.substring(0, counter) + "00";
-                 }
-            }
+            exp *= 10;
         }
-        return tmpString;
+        int wholePart = (int)convert;
+        double decimalPart = convert - wholePart;
+        int convertedDecimal = (int)((decimalPart * exp) + .5);
+        String tmpDecimal = Integer.toString(convertedDecimal);
+        if(tmpDecimal.length() < m_precision)
+        {
+            byte[] extraZeros = new byte[m_precision - tmpDecimal.length()];
+            Arrays.fill(extraZeros, (byte)'0');
+            tmpDecimal = new String(extraZeros).concat(tmpDecimal);
+        }        
+        return new String(Integer.toString(wholePart) + '.' + tmpDecimal);
     }
     
     private String m_formattedString;

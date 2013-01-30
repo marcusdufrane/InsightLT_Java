@@ -14,6 +14,7 @@ public class StringData implements DisplayData{
     
     public StringData()
     {
+        m_updateString = true;
         m_stringData = "";
         m_stringHeader = "";
     };
@@ -44,12 +45,14 @@ public class StringData implements DisplayData{
             m_updateString = false;
             if(m_stringHeader.length() + m_stringData.length() > zoneLength)
             {
-                String tmpString = m_stringData;
                 if(m_stringData.length() > zoneLength)
                 {
-                        tmpString = new String( tmpString.substring( 0, (tmpString.length() - (tmpString.length() - zoneLength) - 1)));
+                    m_formattedString = m_stringData.substring( 0, zoneLength);
                 }
-                m_formattedString = m_stringHeader.substring(0, zoneLength - tmpString.length()) + tmpString;
+                else
+                {
+                    m_formattedString = m_stringHeader.substring(0, zoneLength - m_stringData.length()) + m_stringData;
+                }
             }
             else
             {
