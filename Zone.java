@@ -50,6 +50,10 @@ public class Zone {
         if(m_scrollPosition == 0)
 	{
             m_scrollPosition = m_infoItems.size() - 1;
+            if(m_scrollPosition < 0)
+            {
+                m_scrollPosition = 0;
+            }
 	}
 	else
 	{
