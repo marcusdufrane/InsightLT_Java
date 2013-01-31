@@ -45,7 +45,7 @@ InsightLT.TWO_ONE_LINE_ZONES
 to the constructor like
 
 InsightLT display = new InsightLT(InsightLT.FOUR_ZONES);
-
+display.startDisplay();
 
 
 Adding Data to the zones
