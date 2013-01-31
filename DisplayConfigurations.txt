@@ -101,19 +101,22 @@ Initialize these items in the constructor, especially the display.
 ->class scope
 InsightLT display;
 StringData disp_userInfo;
-IntegerData disp_numberOfGamePeices;
+IntegerData disp_numberOfGamePieces;
 
 -> constructor
-display = new InsightLT(config);
+display = new InsightLT(InsightLT.FOUR_ZONES);
+disp_userInfo = new StringData("Mode:");
+disp_numberOfGamePieces = new IntegerData("Items"):
+
 display.registerData(disp_userInfo, 1);
-display.registerData(disp_numberOfGamePeices);
+display.registerData(disp_numberOfGamePieces, 2);
 display.startDisplay();
 
-disp_userInfo = new StringData("Mode:");
-disp_numberOfGamePeices - new IntegerData("Items"):
+
 
 ->auto, disable, or operator
-dataitems.setData(datavalue)
+disp_userInfo.setData("Hello User");
+disp_numberOfGamePieces(4);
 
 
 For use during competition you may want to stop the display to relinquish the
