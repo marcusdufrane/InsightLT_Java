@@ -124,7 +124,7 @@ public class InsightLT implements Runnable {
         }
     }
     
-    public void manualScroll(int zoneNumber, char direction)
+    public void manualScroll(int zoneNumber, byte direction)
     {
         if(zoneNumber > 0 && zoneNumber <= m_zones.size())
         {
