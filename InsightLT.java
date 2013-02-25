@@ -52,6 +52,7 @@ public class InsightLT implements Runnable {
         m_displayConnected = false;
         m_zones = new Vector();
     }
+    
     public Zone getZone(int zoneNumber)
     {
         if(zoneNumber < 1 || zoneNumber > m_zones.size())
@@ -62,6 +63,14 @@ public class InsightLT implements Runnable {
         {
             return (Zone)m_zones.elementAt(zoneNumber - 1);
         }
+    }
+    
+    public Zone clearZone(int zoneNumber)
+    {
+    	if(zoneNumber >= 1 || zoneNumber <= m_zones.size())
+    	{
+    		(Zone)m_zones.elementAt(zoneNumber - 1).clear();
+    	}
     }
     
     public void startDisplay()
